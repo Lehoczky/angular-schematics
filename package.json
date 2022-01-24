@@ -22,6 +22,7 @@
     "typescript": "~4.5.2"
   },
   "devDependencies": {
+    "@angular-eslint/schematics": "^13.0.1",
     "@types/jasmine": "~3.10.0",
     "@types/node": "^12.11.1",
     "jasmine": "^3.5.0"

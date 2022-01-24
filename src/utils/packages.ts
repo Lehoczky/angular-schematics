@@ -8,26 +8,30 @@ export enum DependencyType {
   Optional = 'optionalDependencies',
 }
 
-export function addPackageToPackageJson(
+export async function addPackageToPackageJson(
   host: Tree,
   dependenyType: DependencyType,
   name: string,
   version: string
-): Tree {
-  if (host.exists('package.json')) {
-    const rawPackageJson = host.read('package.json')!.toString('utf-8')
-    const packageJson = JSON.parse(rawPackageJson)
-
-    if (!packageJson[dependenyType]) {
-      packageJson[dependenyType] = {}
-    }
-
-    if (!packageJson[dependenyType][name]) {
-      packageJson[dependenyType][name] = version
-    }
-
-    host.overwrite('package.json', JSON.stringify(packageJson, null, 2))
+): Promise<Tree> {
+  if (!host.exists('package.json')) {
+    throw new Error(
+      'Could not find a `package.json` file at the root of your workspace'
+    )
   }
+
+  const rawFile = host.read('package.json')!.toString('utf-8')
+  const packageJson = JSON.parse(rawFile)
+
+  if (!packageJson[dependenyType]) {
+    packageJson[dependenyType] = {}
+  }
+
+  if (!packageJson[dependenyType][name]) {
+    packageJson[dependenyType][name] = version
+  }
+
+  host.overwrite('package.json', JSON.stringify(packageJson, null, 2))
 
   return host
 }
