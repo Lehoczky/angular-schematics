@@ -5,7 +5,11 @@ import {
   addESLintPluginsToPackageJson,
   runAngualESLintSchematic,
 } from './eslint'
-import { addPrettierToPackageJson, addPrettierConfig } from './prettier'
+import {
+  addPrettierToPackageJson,
+  addPrettierConfig,
+  runPrettierOnEverything,
+} from './prettier'
 import { addStylelintToPackageJson, addStylelintConfig } from './stylelint'
 import { addVSCodeFiles } from './vscode'
 
@@ -16,9 +20,10 @@ export default function (_options: any): Rule {
     addStylelintToPackageJson(),
     addStylelintConfig(),
     addVSCodeFiles(),
-    runAngualESLintSchematic(),
-    addESLintPluginsToPackageJson(),
-    addEslintPluginsToConfig(),
+    // runAngualESLintSchematic(),
+    // addESLintPluginsToPackageJson(),
+    // addEslintPluginsToConfig(),
+    runPrettierOnEverything(),
     // installPackages()
   ])
 }
