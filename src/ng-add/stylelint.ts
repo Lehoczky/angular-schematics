@@ -22,8 +22,8 @@ export function addStylelintToPackageJson(): Rule {
 }
 
 export function addStylelintConfig(): Rule {
-  return (tree, context) => {
+  return () => {
     const templateSource = apply(url('./files-stylelint'), [move('./')])
-    return mergeWith(templateSource, MergeStrategy.Overwrite)(tree, context)
+    return mergeWith(templateSource, MergeStrategy.Overwrite)
   }
 }

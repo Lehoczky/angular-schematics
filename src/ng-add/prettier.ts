@@ -1,14 +1,14 @@
-import {
-  Rule,
-  apply,
-  MergeStrategy,
-  mergeWith,
-  move,
-  url,
-} from '@angular-devkit/schematics'
+import { Rule, Tree } from '@angular-devkit/schematics'
 import { addLatestVersionToPackageJson } from '../utils/packages'
 import * as prettier from 'prettier'
-import { readFileAsString, walkSync } from '../utils/files'
+import { createJsonFile, readFileAsString, walkSync } from '../utils/files'
+
+const PRETTIER_CONFIG = {
+  arrowParens: 'avoid',
+  endOfLine: 'auto',
+  semi: false,
+  singleQuote: true,
+} as const
 
 export function addPrettierToPackageJson(): Rule {
   return async (tree, context): Promise<void> => {
@@ -18,37 +18,38 @@ export function addPrettierToPackageJson(): Rule {
 
 export function addPrettierConfig(): Rule {
   return (tree, context) => {
-    const templateSource = apply(url('./files-prettier'), [move('./')])
-    return mergeWith(templateSource, MergeStrategy.Overwrite)(tree, context)
+    createJsonFile(tree, '.prettierrc', PRETTIER_CONFIG)
   }
 }
 
 export function runPrettierOnEverything(): Rule {
   return async (tree, context) => {
-    const config = {
-      arrowParens: 'avoid',
-      endOfLine: 'auto',
-      semi: false,
-      singleQuote: true,
-    } as const
+    const sourceFiles = walkSync('./src')
+    const filesToCheck = [...sourceFiles, './.eslintrc.json', './angular.json']
 
-    const files = [...walkSync('./src')]
-
-    for (const filePath of [...files, './.eslintrc.json', './angular.json']) {
-      if (
-        filePath.endsWith('ts') ||
-        filePath.endsWith('html') ||
-        filePath.endsWith('css') ||
-        filePath.endsWith('scss') ||
-        filePath.endsWith('json')
-      ) {
-        const rawText = readFileAsString(tree, filePath)
-        const formattedText = prettier.format(rawText, {
-          ...config,
-          filepath: filePath,
-        })
-        tree.overwrite(filePath, formattedText)
+    for (const filePath of filesToCheck) {
+      if (canFormatFile(filePath)) {
+        formatFile(tree, filePath)
       }
     }
   }
+}
+
+function canFormatFile(path: string): boolean {
+  return (
+    path.endsWith('ts') ||
+    path.endsWith('html') ||
+    path.endsWith('css') ||
+    path.endsWith('scss') ||
+    path.endsWith('json')
+  )
+}
+
+function formatFile(tree: Tree, path: string): void {
+  const rawText = readFileAsString(tree, path)
+  const formattedText = prettier.format(rawText, {
+    ...PRETTIER_CONFIG,
+    filepath: path,
+  })
+  tree.overwrite(path, formattedText)
 }

@@ -14,6 +14,10 @@ export function readJsonFile(tree: Tree, path: string): any {
   return JSON.parse(rawFile)
 }
 
+export function createJsonFile(tree: Tree, path: string, content: any): void {
+  tree.create(path, JSON.stringify(content, null, 2))
+}
+
 export function overwriteJsonFile(
   tree: Tree,
   path: string,

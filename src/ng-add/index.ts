@@ -1,4 +1,4 @@
-import { chain, Rule, SchematicContext, Tree } from '@angular-devkit/schematics'
+import { chain, Rule } from '@angular-devkit/schematics'
 import { NodePackageInstallTask } from '@angular-devkit/schematics/tasks'
 import {
   addEslintPluginsToConfig,
@@ -24,7 +24,7 @@ export default function (_options: any): Rule {
     addESLintPluginsToPackageJson(),
     addEslintPluginsToConfig(),
     runPrettierOnEverything(),
-    installPackages(),
+    // installPackages(),
   ])
 }
 
