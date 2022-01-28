@@ -1,7 +1,5 @@
 import {
   Rule,
-  Tree,
-  SchematicContext,
   url,
   move,
   mergeWith,
@@ -10,7 +8,7 @@ import {
 } from '@angular-devkit/schematics'
 
 export function addVSCodeFiles(): Rule {
-  return (tree: Tree, context: SchematicContext) => {
+  return (tree, context) => {
     const templateSource = apply(url('./files-vscode'), [move('./.vscode')])
     return mergeWith(templateSource, MergeStrategy.Overwrite)(tree, context)
   }

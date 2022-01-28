@@ -1,42 +1,35 @@
 import { SchematicContext, Tree } from '@angular-devkit/schematics'
 import axios from 'axios'
+import { overwriteJsonFile, readJsonFile } from './files'
 
-export enum DependencyType {
-  Default = 'dependencies',
-  Dev = 'devDependencies',
-  Peer = 'peerDependencies',
-  Optional = 'optionalDependencies',
+export async function addLatestVersionToPackageJson(
+  tree: Tree,
+  context: SchematicContext,
+  packageName: string
+): Promise<void> {
+  const version = await getLatestVersion(context, packageName)
+  await addPackageToPackageJson(tree, packageName, version)
 }
 
-export async function addPackageToPackageJson(
-  host: Tree,
-  dependenyType: DependencyType,
+async function addPackageToPackageJson(
+  tree: Tree,
   name: string,
   version: string
-): Promise<Tree> {
-  if (!host.exists('package.json')) {
-    throw new Error(
-      'Could not find a `package.json` file at the root of your workspace'
-    )
+): Promise<void> {
+  const packageJson = readJsonFile(tree, 'package.json')
+
+  if (!packageJson.devDependencies) {
+    packageJson.devDependencies = {}
   }
 
-  const rawFile = host.read('package.json')!.toString('utf-8')
-  const packageJson = JSON.parse(rawFile)
-
-  if (!packageJson[dependenyType]) {
-    packageJson[dependenyType] = {}
+  if (!packageJson.devDependencies[name]) {
+    packageJson.devDependencies[name] = version
   }
 
-  if (!packageJson[dependenyType][name]) {
-    packageJson[dependenyType][name] = version
-  }
-
-  host.overwrite('package.json', JSON.stringify(packageJson, null, 2))
-
-  return host
+  overwriteJsonFile(tree, 'package.json', packageJson)
 }
 
-export async function getLatestVersion(
+async function getLatestVersion(
   context: SchematicContext,
   packageName: string
 ): Promise<string> {

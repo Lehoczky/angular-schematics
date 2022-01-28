@@ -1,60 +1,39 @@
-import {
-  Rule,
-  Tree,
-  SchematicContext,
-  externalSchematic,
-} from '@angular-devkit/schematics'
-import {
-  getLatestVersion,
-  addPackageToPackageJson,
-  DependencyType,
-} from '../utils/packages'
+import { Rule, externalSchematic } from '@angular-devkit/schematics'
+import { overwriteJsonFile, readJsonFile } from '../utils/files'
+import { addLatestVersionToPackageJson } from '../utils/packages'
 
 export function runAngualESLintSchematic(): Rule {
   return externalSchematic('@angular-eslint/schematics', 'ng-add', {})
 }
 
 export function addESLintPluginsToPackageJson(): Rule {
-  return async (tree: Tree, context: SchematicContext): Promise<void> => {
-    const [configPrettierVersion, onlyWarnVersion] = await Promise.all([
-      getLatestVersion(context, 'eslint-config-prettier'),
-      getLatestVersion(context, 'eslint-plugin-only-warn'),
-    ])
+  return async (tree, context): Promise<void> => {
+    const addToPackages = (name: string) =>
+      addLatestVersionToPackageJson(tree, context, name)
 
-    addPackageToPackageJson(
-      tree,
-      DependencyType.Dev,
-      'eslint-config-prettier',
-      configPrettierVersion
-    )
-    addPackageToPackageJson(
-      tree,
-      DependencyType.Dev,
-      'eslint-plugin-only-warn',
-      onlyWarnVersion
-    )
+    await Promise.all([
+      addToPackages('eslint-config-prettier'),
+      addToPackages('eslint-plugin-only-warn'),
+    ])
   }
 }
 
 export function addEslintPluginsToConfig(): Rule {
-  return (tree: Tree) => {
-    if (!tree.exists('.eslintrc.json')) {
-      throw new Error(
-        'Could not find a `.eslintrc.json` file at the root of your workspace'
-      )
-    }
-
-    const rawFile = tree.read('.eslintrc.json')!.toString('utf-8')
-    const eslintrc = JSON.parse(rawFile)
+  return tree => {
+    const eslintrc = readJsonFile(tree, '.eslintrc.json')
 
     eslintrc.plugins = ['only-warn']
 
-    const tsRules = eslintrc.overrides.find(
-      (block: any) => block.files[0] === '*.ts'
-    )
-    tsRules['extends'].push('prettier')
+    const tsConfig = getTypeScriptConfiguration(eslintrc)
+    tsConfig.extends.push('prettier')
 
-    tree.overwrite('.eslintrc.json', JSON.stringify(eslintrc, null, 2))
+    overwriteJsonFile(tree, '.eslintrc.json', eslintrc)
     return tree
   }
+}
+
+function getTypeScriptConfiguration(config: any) {
+  const { overrides } = config
+  const isTypeScriptGlob = (glob: string) => glob == '*.ts'
+  return overrides.find((block: any) => block.files.some(isTypeScriptGlob))
 }

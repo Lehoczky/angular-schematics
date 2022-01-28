@@ -1,38 +1,30 @@
 import {
   Rule,
-  Tree,
-  SchematicContext,
   apply,
   MergeStrategy,
   mergeWith,
   move,
   url,
 } from '@angular-devkit/schematics'
-import {
-  addPackageToPackageJson,
-  DependencyType,
-  getLatestVersion,
-} from '../utils/packages'
+import { addLatestVersionToPackageJson } from '../utils/packages'
 import * as prettier from 'prettier'
-import * as fs from 'fs'
-import * as path from 'path'
+import { readFileAsString, walkSync } from '../utils/files'
 
 export function addPrettierToPackageJson(): Rule {
-  return async (tree: Tree, context: SchematicContext): Promise<void> => {
-    const version = await getLatestVersion(context, 'prettier')
-    addPackageToPackageJson(tree, DependencyType.Dev, 'prettier', version)
+  return async (tree, context): Promise<void> => {
+    await addLatestVersionToPackageJson(tree, context, 'prettier')
   }
 }
 
 export function addPrettierConfig(): Rule {
-  return (tree: Tree, context: SchematicContext) => {
+  return (tree, context) => {
     const templateSource = apply(url('./files-prettier'), [move('./')])
     return mergeWith(templateSource, MergeStrategy.Overwrite)(tree, context)
   }
 }
 
 export function runPrettierOnEverything(): Rule {
-  return async (tree: Tree, context: SchematicContext) => {
+  return async (tree, context) => {
     const config = {
       arrowParens: 'avoid',
       endOfLine: 'auto',
@@ -50,24 +42,13 @@ export function runPrettierOnEverything(): Rule {
         filePath.endsWith('scss') ||
         filePath.endsWith('json')
       ) {
-        const rawText = tree.read(filePath)!.toString('utf-8')
+        const rawText = readFileAsString(tree, filePath)
         const formattedText = prettier.format(rawText, {
           ...config,
           filepath: filePath,
         })
         tree.overwrite(filePath, formattedText)
       }
-    }
-  }
-}
-
-function* walkSync(dir: string): Generator<string> {
-  const files = fs.readdirSync(dir, { withFileTypes: true })
-  for (const file of files) {
-    if (file.isDirectory()) {
-      yield* walkSync(path.join(dir, file.name))
-    } else {
-      yield path.join(dir, file.name)
     }
   }
 }

@@ -1,51 +1,28 @@
 import {
   Rule,
-  Tree,
-  SchematicContext,
   apply,
   MergeStrategy,
   mergeWith,
   move,
   url,
 } from '@angular-devkit/schematics'
-import {
-  getLatestVersion,
-  addPackageToPackageJson,
-  DependencyType,
-} from '../utils/packages'
+import { addLatestVersionToPackageJson } from '../utils/packages'
 
 export function addStylelintToPackageJson(): Rule {
-  return async (tree: Tree, context: SchematicContext): Promise<void> => {
-    const [stylelintVersion, configStandardVersion, configPrettierVersion] =
-      await Promise.all([
-        getLatestVersion(context, 'stylelint'),
-        getLatestVersion(context, 'stylelint-config-prettier'),
-        getLatestVersion(context, 'stylelint-config-standard'),
-      ])
+  return async (tree, context): Promise<void> => {
+    const addToPackages = (name: string) =>
+      addLatestVersionToPackageJson(tree, context, name)
 
-    addPackageToPackageJson(
-      tree,
-      DependencyType.Dev,
-      'stylelint',
-      stylelintVersion
-    )
-    addPackageToPackageJson(
-      tree,
-      DependencyType.Dev,
-      'stylelint-config-prettier',
-      configStandardVersion
-    )
-    addPackageToPackageJson(
-      tree,
-      DependencyType.Dev,
-      'stylelint-config-standard',
-      configPrettierVersion
-    )
+    await Promise.all([
+      addToPackages('stylelint'),
+      addToPackages('stylelint-config-prettier'),
+      addToPackages('stylelint-config-standard'),
+    ])
   }
 }
 
 export function addStylelintConfig(): Rule {
-  return (tree: Tree, context: SchematicContext) => {
+  return (tree, context) => {
     const templateSource = apply(url('./files-stylelint'), [move('./')])
     return mergeWith(templateSource, MergeStrategy.Overwrite)(tree, context)
   }

@@ -20,17 +20,16 @@ export default function (_options: any): Rule {
     addStylelintToPackageJson(),
     addStylelintConfig(),
     addVSCodeFiles(),
-    // runAngualESLintSchematic(),
-    // addESLintPluginsToPackageJson(),
-    // addEslintPluginsToConfig(),
+    runAngualESLintSchematic(),
+    addESLintPluginsToPackageJson(),
+    addEslintPluginsToConfig(),
     runPrettierOnEverything(),
-    // installPackages()
+    installPackages(),
   ])
 }
 
 function installPackages(): Rule {
-  return (tree: Tree, context: SchematicContext): Tree => {
+  return (_tree, context): void => {
     context.addTask(new NodePackageInstallTask())
-    return tree
   }
 }
