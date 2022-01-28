@@ -1,5 +1,6 @@
 import { chain, Rule } from '@angular-devkit/schematics'
 import { NodePackageInstallTask } from '@angular-devkit/schematics/tasks'
+import { orderDevDependenciesInPackageJson } from '../utils/packages'
 import {
   addEslintPluginsToConfig,
   addESLintPluginsToPackageJson,
@@ -24,6 +25,7 @@ export default function (_options: any): Rule {
     addESLintPluginsToPackageJson(),
     addEslintPluginsToConfig(),
     runPrettierOnEverything(),
+    orderDevDependenciesInPackageJson(),
     // installPackages(),
   ])
 }

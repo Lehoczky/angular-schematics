@@ -1,6 +1,15 @@
-import { SchematicContext, Tree } from '@angular-devkit/schematics'
+import { Rule, SchematicContext, Tree } from '@angular-devkit/schematics'
 import axios from 'axios'
 import { overwriteJsonFile, readJsonFile } from './files'
+import { sortObjectByKeys } from './sort-object'
+
+export function orderDevDependenciesInPackageJson(): Rule {
+  return tree => {
+    const packageJson = readJsonFile(tree, 'package.json')
+    packageJson.devDependencies = sortObjectByKeys(packageJson.devDependencies)
+    overwriteJsonFile(tree, 'package.json', packageJson)
+  }
+}
 
 export async function addLatestVersionToPackageJson(
   tree: Tree,
