@@ -28,10 +28,11 @@ export default function (_options: any): Rule {
     info('setting up prettier...'),
     addPrettierToPackageJson(),
     addPrettierConfig(),
+    info('formatting files...'),
     runPrettierOnEverything(),
     info('last touches...'),
     orderDevDependenciesInPackageJson(),
-    installPackages(),
+    // installPackages(),
   ])
 }
 

@@ -4,7 +4,7 @@
   "description": "A blank schematics",
   "scripts": {
     "build": "tsc -p tsconfig.json",
-    "test": "npm run build && jasmine src/**/*_spec.js"
+    "test": "npm run build && jasmine src/**/*.spec.js"
   },
   "keywords": [
     "schematics"
@@ -19,10 +19,12 @@
     "@angular-devkit/core": "^13.1.4",
     "@angular-devkit/schematics": "^13.1.4",
     "axios": "^0.25.0",
+    "ignore-walk": "^4.0.1",
     "typescript": "~4.5.2"
   },
   "devDependencies": {
     "@angular-eslint/schematics": "^13.0.1",
+    "@types/ignore-walk": "^4.0.0",
     "@types/jasmine": "~3.10.0",
     "@types/node": "^12.11.1",
     "@types/prettier": "^2.4.3",

@@ -1,7 +1,8 @@
 import { Rule, Tree } from '@angular-devkit/schematics'
 import { addLatestVersionToPackageJson } from '../utils/packages'
 import * as prettier from 'prettier'
-import { createJsonFile, readFileAsString, walkSync } from '../utils/files'
+import { saveJsonFile, readFileAsString } from '../utils/files'
+import * as walk from 'ignore-walk'
 
 const PRETTIER_CONFIG = {
   arrowParens: 'avoid',
@@ -18,18 +19,16 @@ export function addPrettierToPackageJson(): Rule {
 
 export function addPrettierConfig(): Rule {
   return tree => {
-    createJsonFile(tree, '.prettierrc', PRETTIER_CONFIG)
+    saveJsonFile(tree, '.prettierrc', PRETTIER_CONFIG)
   }
 }
 
 export function runPrettierOnEverything(): Rule {
-  return async (tree, context) => {
-    const sourceFiles = walkSync('./src')
-    const filesToCheck = [...sourceFiles, './.eslintrc.json', './angular.json']
+  return async tree => {
+    const filesToCheck = walk.sync({ ignoreFiles: ['.gitignore'] })
 
     for (const filePath of filesToCheck) {
       if (canFormatFile(filePath)) {
-        context.logger.info(`formatting: ${filePath} ...`)
         formatFile(tree, filePath)
       }
     }
@@ -37,13 +36,12 @@ export function runPrettierOnEverything(): Rule {
 }
 
 function canFormatFile(path: string): boolean {
-  return (
-    path.endsWith('ts') ||
-    path.endsWith('html') ||
-    path.endsWith('css') ||
-    path.endsWith('scss') ||
-    path.endsWith('json')
-  )
+  const supportedFileTypes = ['ts', 'html', 'css', 'scss', 'json', 'js']
+  const ignoredFiles = ['lock.json']
+
+  const isSupportedFile = supportedFileTypes.some(type => path.endsWith(type))
+  const isIgnoredFile = ignoredFiles.some(name => path.endsWith(name))
+  return isSupportedFile && !isIgnoredFile
 }
 
 function formatFile(tree: Tree, path: string): void {

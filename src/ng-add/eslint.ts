@@ -1,5 +1,5 @@
 import { Rule, externalSchematic } from '@angular-devkit/schematics'
-import { overwriteJsonFile, readJsonFile } from '../utils/files'
+import { saveJsonFile, readJsonFile } from '../utils/files'
 import { addLatestVersionToPackageJson } from '../utils/packages'
 
 export function runAngualESLintSchematic(): Rule {
@@ -27,7 +27,7 @@ export function addEslintPluginsToConfig(): Rule {
     const tsConfig = getTypeScriptConfiguration(eslintrc)
     tsConfig.extends.push('prettier')
 
-    overwriteJsonFile(tree, '.eslintrc.json', eslintrc)
+    saveJsonFile(tree, '.eslintrc.json', eslintrc)
     return tree
   }
 }
