@@ -13,7 +13,7 @@
   "license": "MIT",
   "schematics": "./src/collection.json",
   "ng-add": {
-    "save": "devDependencies"
+    "save": "false"
   },
   "dependencies": {
     "@angular-devkit/core": "^13.1.4",
