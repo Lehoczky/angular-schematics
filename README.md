@@ -10,6 +10,12 @@
 2. installs and configures `stylelint`, `ESLint` (with plugins) and `prettier`
 3. runs prettier on your source files
 
+## Install
+
+```console
+ng add @lehoczky/angular-schematics
+```
+
 ## Development
 
 To test the schematic, create a new Angular CLI project:
