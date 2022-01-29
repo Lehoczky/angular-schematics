@@ -1,28 +1,21 @@
-# Getting Started With Schematics
+# Opinionated schematics for new Angular projects
 
-This repository is a basic Schematic implementation that serves as a starting point to create and publish Schematics to NPM.
+## What it does
 
-### Testing
+1. adds `vscode` workspace settings and extension recommendations
+2. installs and configures `stylelint`, `ESLint` (with plugins) and `prettier`
+3. runs prettier on your source files
 
-To test locally, install `@angular-devkit/schematics-cli` globally and use the `schematics` command line tool. That tool acts the same as the `generate` command of the Angular CLI, but also has a debug mode.
+## Development
 
-Check the documentation with
+To test the schematic, create a new Angular CLI project:
 
-```bash
-schematics --help
+```sh
+ng new angular-test --minimal
 ```
 
-### Unit Testing
+and add the schematic to this newly created project:
 
-`npm run test` will run the unit tests, using Jasmine as a runner and test framework.
-
-### Publishing
-
-To publish, simply do:
-
-```bash
-npm run build
-npm publish
+```sh
+ng add <relative_path_to_this_repository>
 ```
-
-That's it!

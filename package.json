@@ -1,15 +1,12 @@
 {
-  "name": "angular-schematics",
+  "name": "@lehoczky/angular-schematics",
   "version": "0.0.0",
-  "description": "A blank schematics",
+  "description": "Opinionated schematics for setting up Angular workspaces",
   "scripts": {
     "build": "tsc -p tsconfig.json",
+    "lint": "prettier src/** --check --ignore-path ./.gitignore",
     "test": "npm run build && jasmine src/**/*.spec.js"
   },
-  "keywords": [
-    "schematics"
-  ],
-  "author": "",
   "license": "MIT",
   "schematics": "./src/collection.json",
   "ng-add": {
@@ -30,5 +27,19 @@
     "@types/prettier": "^2.4.3",
     "jasmine": "^3.5.0",
     "prettier": "^2.5.1"
+  },
+  "keywords": [
+    "angular",
+    "schematics"
+  ],
+  "author": {
+    "name": "Zoltan Lehoczky",
+    "email": "ifjlehoczkyzoltan@gmail.com",
+    "url": "https://github.com/Lehoczky"
+  },
+  "homepage": "https://github.com/Lehoczky/angular-schematics",
+  "repository": {
+    "url": "https://github.com/Lehoczky/angular-schematics.git",
+    "type": "git"
   }
 }
