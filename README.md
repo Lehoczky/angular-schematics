@@ -1,5 +1,8 @@
 # Opinionated schematics for new Angular projects
 
+![lint status](https://github.com/lehoczky/angular-schematics/workflows/lint/badge.svg)
+![publish status](https://github.com/lehoczky/angular-schematics/workflows/publish/badge.svg)
+
 ## What it does
 
 1. adds `vscode` workspace settings and extension recommendations
