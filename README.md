@@ -1,5 +1,6 @@
 # Opinionated schematics for new Angular projects
 
+[![NPM version](https://img.shields.io/npm/v/@lehoczky/angular-schematics.svg)](https://www.npmjs.com/package/@lehoczky/vue-termynal)
 ![lint status](https://github.com/lehoczky/angular-schematics/workflows/lint/badge.svg)
 ![publish status](https://github.com/lehoczky/angular-schematics/workflows/publish/badge.svg)
 
