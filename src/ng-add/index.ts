@@ -16,18 +16,27 @@ import { addVSCodeFiles } from './vscode'
 
 export default function (_options: any): Rule {
   return chain([
-    addPrettierToPackageJson(),
-    addPrettierConfig(),
+    info('adding vscode related files...'),
+    addVSCodeFiles(),
+    info('setting up stylelint...'),
     addStylelintToPackageJson(),
     addStylelintConfig(),
-    addVSCodeFiles(),
+    info('setting up eslint...'),
     runAngualESLintSchematic(),
     addESLintPluginsToPackageJson(),
     addEslintPluginsToConfig(),
+    info('setting up prettier...'),
+    addPrettierToPackageJson(),
+    addPrettierConfig(),
     runPrettierOnEverything(),
+    info('last touches...'),
     orderDevDependenciesInPackageJson(),
-    // installPackages(),
+    installPackages(),
   ])
+}
+
+function info(message: string): Rule {
+  return (_tree, context) => context.logger.info(message)
 }
 
 function installPackages(): Rule {

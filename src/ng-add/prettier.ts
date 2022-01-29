@@ -17,7 +17,7 @@ export function addPrettierToPackageJson(): Rule {
 }
 
 export function addPrettierConfig(): Rule {
-  return (tree, context) => {
+  return tree => {
     createJsonFile(tree, '.prettierrc', PRETTIER_CONFIG)
   }
 }
@@ -29,6 +29,7 @@ export function runPrettierOnEverything(): Rule {
 
     for (const filePath of filesToCheck) {
       if (canFormatFile(filePath)) {
+        context.logger.info(`formatting: ${filePath} ...`)
         formatFile(tree, filePath)
       }
     }
