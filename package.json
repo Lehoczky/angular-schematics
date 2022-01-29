@@ -1,6 +1,6 @@
 {
   "name": "@lehoczky/angular-schematics",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "Opinionated schematics for setting up Angular workspaces",
   "scripts": {
     "build": "tsc -p tsconfig.json",
