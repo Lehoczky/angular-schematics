@@ -1,6 +1,6 @@
 {
   "name": "@lehoczky/angular-schematics",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Opinionated schematics for setting up Angular workspaces",
   "scripts": {
     "build": "tsc -p tsconfig.json",
@@ -15,13 +15,13 @@
   "dependencies": {
     "@angular-devkit/core": "^13.1.4",
     "@angular-devkit/schematics": "^13.1.4",
+    "@angular-eslint/schematics": "^13.0.1",
     "axios": "^0.25.0",
     "ignore-walk": "^4.0.1",
     "prettier": "^2.5.1",
     "typescript": "~4.5.2"
   },
   "devDependencies": {
-    "@angular-eslint/schematics": "^13.0.1",
     "@types/ignore-walk": "^4.0.0",
     "@types/jasmine": "~3.10.0",
     "@types/node": "^12.11.1",
